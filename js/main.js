@@ -7,7 +7,12 @@ let startTime;
 let countDownTime = 0;
 let timeLeft;
 let timerId;
+let audioElem;
 let isStart = false;
+let isSound = false;
+
+const INTIAL_TIME = '00:00.000';
+
 
 function updateTimer(time) {
     let date = new Date(time);
@@ -39,17 +44,37 @@ function countDown() {
             // カウントダウン終了後再度カウントダウンしないようにする
             countDownTime = 0;
             updateTimer(timeLeft);
-
-            alert('Time up!');
+            
+            if (!isSound) {
+                playSound();
+                isSound = true;
+            }
+            
             return;
         }
         updateTimer(timeLeft);
         countDown();
-    }, 10)
+    }, 10);
+}
+
+function playSound() {
+    audioElem = new Audio();
+    audioElem.src = 'alert.mp3';
+    audioElem.loop = true;
+    audioElem.play();
+}
+
+function stopSound() {
+    audioElem.pause();
 }
 // event
 // startボタン
 start.addEventListener('click', function() {
+
+    if (timer.textContent === INTIAL_TIME) {
+        return;
+    }
+
     if (isStart === false) {
         isStart = true;
         start.textContent = 'Stop';
@@ -95,4 +120,6 @@ reset.addEventListener('click', function() {
     // 1秒ずつ加算
     countDownTime = 0;
     updateTimer(countDownTime);
+    stopSound();
+    isSound = false;
 });
